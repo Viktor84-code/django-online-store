@@ -19,7 +19,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item"><a href="/" class="nav-link">Главная</a></li>
-            <li><a href="#" class="nav-link">Каталог</a></li>
+            <li><a href="/catalog/" class="nav-link">Каталог</a></li>
             <li><a href="/contacts/" class="nav-link active">Контакты</a></li>
         </ul>
         <hr>
@@ -74,6 +74,29 @@
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Список обращений пользователей -->
+            <div class="mt-5">
+                <h3>Обращения пользователей</h3>
+                <div class="row">
+                    {% for contact in contacts %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ contact.name }}</h5>
+                                <p class="card-text">
+                                    <strong>Телефон:</strong> {{ contact.phone }}<br>
+                                    <strong>Сообщение:</strong> {{ contact.message }}
+                                </p>
+                                <small class="text-muted">Дата: {{ contact.created_at|date:"d.m.Y H:i" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">Пока нет обращений</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
