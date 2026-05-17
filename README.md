@@ -97,3 +97,26 @@ poetry run python manage.py load_test_data
 
 # Запуск сервера
 poetry run python manage.py runserver
+
+## Тестирование
+
+Запуск тестов:
+
+poetry run python manage.py test
+Покрытие кода тестами:
+
+bash
+poetry run coverage run manage.py test
+poetry run coverage report
+Текущее покрытие: 97%
+
+Качество кода
+Форматирование:
+
+bash
+poetry run black .
+poetry run isort .
+Линтинг:
+
+bash
+poetry run flake8 .
