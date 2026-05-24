@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Skystore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar { min-width: 250px; height: 100vh; background: #212529; color: white; }
+        .nav-link { color: rgba(255,255,255,.75); }
+        .nav-link:hover, .nav-link.active { color: white; background: #0d6efd; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="d-flex">
+    <!-- Боковое меню -->
+    <div class="sidebar d-flex flex-column p-3">
+        <h3 class="fs-4 text-center">Skystore</h3>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item"><a href="/" class="nav-link active">Главная</a></li>
+            <li><a href="/catalog/" class="nav-link">Каталог</a></li>
+            <li><a href="/contacts/" class="nav-link">Контакты</a></li>
+        </ul>
+        <hr>
+        <div class="p-2 small">© Skystore 2026</div>
+    </div>
+
+    <!-- Основной контент -->
+    <main class="container-fluid p-5">
+        <div class="bg-white p-5 rounded shadow-sm">
+            <h1 class="display-4 fw-bold">Skystore</h1>
+            <p class="lead text-muted">Отличный вариант хранения ваших плагинов и примеров кода.</p>
+
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card border-primary mb-3 shadow-sm" style="max-width: 18rem;">
+                        <div class="card-header bg-primary text-white">Удобный сервис рассылок</div>
+                        <div class="card-body text-center">
+                            <h2 class="card-title pricing-card-title">$ 140</h2>
+                            <ul class="list-unstyled mt-3 mb-4 text-start ms-3">
+                                <li>✅ Неограниченная лицензия</li>
+                                <li>✅ Поддержка</li>
+                                <li>✅ Установка на сервер</li>
+                                <li>✅ Обновления</li>
+                            </ul>
+                            <button type="button" class="w-100 btn btn-lg btn-primary">Купить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5>Категории</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Рассылки</li>
+                        <li class="list-group-item">Телеграм боты</li>
+                        <li class="list-group-item">Полезные утилиты</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
