@@ -17,4 +17,18 @@
     <p>Товаров пока нет</p>
     {% endfor %}
 </div>
+<!-- Пагинация -->
+<div class="pagination" style="margin-top: 30px; text-align: center;">
+    {% if products.has_previous %}
+        <a href="?page=1">&laquo; Первая</a>
+        <a href="?page={{ products.previous_page_number }}">Назад</a>
+    {% endif %}
+
+    <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
+
+    {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}">Вперед</a>
+        <a href="?page={{ products.paginator.num_pages }}">Последняя &raquo;</a>
+    {% endif %}
+</div>
 {% endblock %}

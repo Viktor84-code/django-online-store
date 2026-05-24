@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .forms import ProductForm
 from django.shortcuts import redirect
+from django.core.paginator import Paginator
 
 
 from .models import Contact, Product
@@ -39,8 +40,13 @@ def catalog(request):
 
 
 def product_list(request):
-    """Главная страница с динамическим списком товаров"""
-    products = Product.objects.all()
+    """Главная страница с динамическим списком товаров и пагинацией"""
+    products_list = Product.objects.all()
+    paginator = Paginator(products_list, 6)  # 6 товаров на страницу
+
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     return render(request, 'catalog/product_list.html', {'products': products})
 
 
