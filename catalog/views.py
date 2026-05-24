@@ -35,7 +35,10 @@ def contacts(request):
 
 
 def catalog(request):
-    products = Product.objects.all()
+    products_list = Product.objects.all()
+    paginator = Paginator(products_list, 6)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
     return render(request, "catalog/catalog.html", {"products": products})
 
 
