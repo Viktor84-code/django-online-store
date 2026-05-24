@@ -26,7 +26,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.home, name="home"),
     path("contacts/", views.contacts, name="contacts"),
-    path("catalog/", views.catalog, name="catalog"),  # Эту строку добавить
+    path("catalog/", views.catalog, name="catalog"),
+    path("products/", views.product_list, name="product_list"),
+    path("products/<int:pk>/", views.product_detail, name="product_detail"),
 ]
 
 if settings.DEBUG:
