@@ -15,7 +15,10 @@
     </style>
 </head>
 <body>
-    {% include 'includes/menu.html' %}
+    <nav>
+        <a href="/products/">Главная</a>
+        <a href="/contacts/">Контакты</a>
+    </nav>
 
     <main class="container">
         {% block content %}
@@ -27,9 +30,3 @@
     </footer>
 </body>
 </html>
-📄 templates/includes/menu.html
-html
-<nav>
-    <a href="{% url 'catalog:product_list' %}">Главная</a>
-    <a href="{% url 'catalog:product_create' %}">Добавить товар</a>  <!-- для доп задания -->
-</nav>

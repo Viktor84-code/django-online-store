@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<a href="/products/">← Назад к каталогу</a>
+
+<h1>{{ product.name }}</h1>
+<p><strong>Цена:</strong> {{ product.price }} ₽</p>
+<p><strong>Описание:</strong></p>
+<p>{{ product.description|linebreaks }}</p>
+{% endblock %}
