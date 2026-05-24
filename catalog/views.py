@@ -1,4 +1,7 @@
 from django.shortcuts import render, get_object_or_404
+from .forms import ProductForm
+from django.shortcuts import redirect
+
 
 from .models import Contact, Product
 
@@ -45,3 +48,14 @@ def product_detail(request, pk):
     """Детальная страница товара"""
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'catalog/product_detail.html', {'product': product})
+
+
+def product_create(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm()
+    return render(request, 'catalog/product_create.html', {'form': form})
