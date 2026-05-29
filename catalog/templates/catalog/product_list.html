@@ -37,7 +37,6 @@
             <li class="nav-item"><a href="/" class="nav-link">Главная</a></li>
             <li><a href="/catalog/" class="nav-link active">Каталог</a></li>
             <li><a href="/contacts/" class="nav-link">Контакты</a></li>
-            <li><a href="/create/" class="nav-link">➕ Добавить товар</a></li>
         </ul>
         <hr>
         <div class="p-2 small">© Skystore 2026</div>
@@ -51,46 +50,37 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
-                         style="height: 200px; object-fit: cover;">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
                     {% else %}
-                    <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
+                        <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
                     {% endif %}
                     <div class="card-body">
                         <h3>{{ product.name }}</h3>
                         <p>{{ product.description|truncatechars:100 }}</p>
                         <p><strong>{{ product.price }} ₽</strong></p>
                         <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary">Подробнее →</a>
-
-                        <div class="btn-group mt-2 w-100">
-                            <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-sm btn-success">✏️
-                                Редактировать</a>
-                            <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-secondary">🗑
-                                Удалить</a>
-                        </div>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
                 <p>Товаров пока нет</p>
-                <a href="/create/" class="btn btn-success">Создать первый товар</a>
             </div>
             {% endfor %}
         </div>
 
-        <!-- Пагинация с номерами страниц -->
+        <!-- Пагинация -->
         <div class="pagination">
             {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; Первая</a>
-            <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+                <a href="?page=1">&laquo; Первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
             {% endif %}
 
             <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
 
             {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
             {% endif %}
         </div>
     </main>
