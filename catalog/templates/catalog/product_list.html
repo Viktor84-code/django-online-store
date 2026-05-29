@@ -7,9 +7,29 @@
     .sidebar { min-width: 250px; height: 100vh; background: #212529; color: white; }
     .nav-link { color: rgba(255,255,255,.75); }
     .nav-link:hover, .nav-link.active { color: white; background: #0d6efd; }
+    .pagination {
+        margin-top: 30px;
+        text-align: center;
+    }
+    .pagination a, .pagination span {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 0 4px;
+        text-decoration: none;
+        background: #f4f4f4;
+        border-radius: 4px;
+        color: #333;
+    }
+    .pagination a:hover {
+        background: #0d6efd;
+        color: white;
+    }
+    .pagination span {
+        background: #0d6efd;
+        color: white;
+    }
 </style>
 <div class="d-flex">
-    <!-- Боковое меню -->
     <div class="sidebar d-flex flex-column p-3">
         <h3 class="fs-4 text-center">Skystore</h3>
         <hr>
@@ -17,12 +37,12 @@
             <li class="nav-item"><a href="/" class="nav-link">Главная</a></li>
             <li><a href="/catalog/" class="nav-link active">Каталог</a></li>
             <li><a href="/contacts/" class="nav-link">Контакты</a></li>
+            <li><a href="/create/" class="nav-link">➕ Добавить товар</a></li>
         </ul>
         <hr>
         <div class="p-2 small">© Skystore 2026</div>
     </div>
 
-    <!-- Основной контент -->
     <main class="container-fluid p-5">
         <h1>Каталог товаров</h1>
 
@@ -31,37 +51,46 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                         style="height: 200px; object-fit: cover;">
                     {% else %}
-                        <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
+                    <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
                     {% endif %}
                     <div class="card-body">
                         <h3>{{ product.name }}</h3>
                         <p>{{ product.description|truncatechars:100 }}</p>
                         <p><strong>{{ product.price }} ₽</strong></p>
                         <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary">Подробнее →</a>
+
+                        <div class="btn-group mt-2 w-100">
+                            <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-sm btn-success">✏️
+                                Редактировать</a>
+                            <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-secondary">🗑
+                                Удалить</a>
+                        </div>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
                 <p>Товаров пока нет</p>
+                <a href="/create/" class="btn btn-success">Создать первый товар</a>
             </div>
             {% endfor %}
         </div>
 
-        <!-- Пагинация -->
-        <div class="pagination" style="margin-top: 30px; text-align: center;">
-            {% if products.has_previous %}
-                <a href="?page=1">&laquo; Первая</a>
-                <a href="?page={{ products.previous_page_number }}">Назад</a>
+        <!-- Пагинация с номерами страниц -->
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
             {% endif %}
 
-            <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
+            <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
 
-            {% if products.has_next %}
-                <a href="?page={{ products.next_page_number }}">Вперед</a>
-                <a href="?page={{ products.paginator.num_pages }}">Последняя &raquo;</a>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
             {% endif %}
         </div>
     </main>
