@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Добавить товар{% endblock %}
+{% block title %}{% if form.instance.pk %}Редактировать{% else %}Новая запись{% endif %}{% endblock %}
 
 {% block content %}
 <div class="d-flex">
     {% include 'catalog/menu.html' %}
 
     <main class="container-fluid p-5">
-        <h1>Новый товар</h1>
+        <h1>{% if form.instance.pk %}Редактировать{% else %}Новая запись{% endif %}</h1>
+        
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Сохранить</button>
-            <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Отмена</a>
+            <a href="{% url 'blog:list' %}" class="btn btn-secondary">Отмена</a>
         </form>
     </main>
 </div>

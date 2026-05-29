@@ -3,19 +3,25 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<a href="/catalog/">← Назад к каталогу</a>
+<div class="d-flex">
+    {% include 'catalog/menu.html' %}
 
-<h1>{{ product.name }}</h1>
+    <main class="container-fluid p-5">
+        <a href="/catalog/">← Назад к каталогу</a>
 
-{% if product.image %}
-    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 300px;">
-{% else %}
-    <div style="width: 300px; height: 200px; background: #6c757d; display: flex; align-items: center; justify-content: center; border: 2px solid #ddd; border-radius: 8px;">
-        <span style="color: white;">Нет фото</span>
-    </div>
-{% endif %}
+        <h1>{{ product.name }}</h1>
 
-<p><strong>Цена:</strong> {{ product.price }} ₽</p>
-<p><strong>Описание:</strong></p>
-<p>{{ product.description|linebreaks }}</p>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 300px;">
+        {% else %}
+            <div style="width: 300px; height: 200px; background: #6c757d; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                <span style="color: white;">Нет фото</span>
+            </div>
+        {% endif %}
+
+        <p><strong>Цена:</strong> {{ product.price }} ₽</p>
+        <p><strong>Описание:</strong></p>
+        <p>{{ product.description|linebreaks }}</p>
+    </main>
+</div>
 {% endblock %}

@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}Добавить товар{% endblock %}
+{% block title %}Удалить товар{% endblock %}
 
 {% block content %}
 <div class="d-flex">
     {% include 'catalog/menu.html' %}
 
     <main class="container-fluid p-5">
-        <h1>Новый товар</h1>
-        <form method="post" enctype="multipart/form-data">
+        <h1>Удалить товар "{{ product.name }}"?</h1>
+        <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <button type="submit" class="btn btn-danger">Да, удалить</button>
             <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Отмена</a>
         </form>
     </main>

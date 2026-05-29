@@ -175,3 +175,119 @@ catalog/templates/
 ├── product_create.html
 ├── contacts.html
 └── home.html
+
+## Домашнее задание "Class-Based Views и Блог" (29.05.2026)
+
+### Выполненные задачи:
+
+#### 1. Перевод контроллеров на CBV (Задание 1)
+- `HomeView` — TemplateView
+- `ContactsView` — TemplateView с обработкой POST
+- `ProductListView` — ListView с пагинацией (6 товаров)
+- `ProductDetailView` — DetailView
+- `ProductCreateView` — CreateView
+- `ProductUpdateView` — UpdateView
+- `ProductDeleteView` — DeleteView
+
+#### 2. Создание блога (Задание 2)
+- Приложение `blog` зарегистрировано в `INSTALLED_APPS`
+- Модель `BlogPost` с полями:
+  - `title` — заголовок
+  - `content` — содержимое
+  - `preview` — изображение
+  - `created_at` — дата создания
+  - `is_published` — признак публикации
+  - `views_count` — количество просмотров
+- Полный CRUD на CBV (Create, Read, Update, Delete)
+- Шаблоны блога наследуют `base.html`
+- URL-маршруты: `/blog/` (список), `/blog/<int:pk>/` (детали), `/blog/create/`, `/blog/<int:pk>/update/`, `/blog/<int:pk>/delete/`
+
+#### 3. Модификации блога (Задание 3)
+- Увеличение счётчика просмотров при открытии статьи (переопределён `get_object` в `DetailView`)
+- В списке статей выводятся только опубликованные (`get_queryset` в `ListView`)
+- После редактирования — редирект на страницу статьи (`get_success_url` в `UpdateView`)
+
+#### 4. Тестирование
+- 21 тест (модели, views, формы, команды)
+- Покрытие каталога: **99%**
+- Все тесты проходят успешно
+
+### Итоговая структура проекта
+django-online-store/
+├── catalog/
+│ ├── management/commands/
+│ │ └── load_test_data.py
+│ ├── migrations/
+│ ├── templates/catalog/
+│ │ ├── home.html
+│ │ ├── product_list.html
+│ │ ├── product_detail.html
+│ │ ├── product_create.html
+│ │ ├── product_edit.html
+│ │ ├── product_confirm_delete.html
+│ │ ├── contacts.html
+│ │ └── menu.html
+│ ├── models.py
+│ ├── admin.py
+│ ├── views.py
+│ ├── urls.py
+│ └── tests.py
+├── blog/
+│ ├── migrations/
+│ ├── templates/blog/
+│ │ ├── blog_list.html
+│ │ ├── blog_detail.html
+│ │ ├── blog_form.html
+│ │ └── blog_confirm_delete.html
+│ ├── models.py
+│ ├── admin.py
+│ ├── views.py
+│ ├── urls.py
+│ └── tests.py
+├── config/
+│ └── settings.py
+├── fixtures/
+├── screenshots/
+├── .env
+└── README.md
+
+text
+
+### Запуск проекта
+
+# Установка зависимостей
+poetry install
+
+# Применение миграций
+poetry run python manage.py migrate
+
+# Загрузка тестовых данных (опционально)
+poetry run python manage.py load_test_data
+
+# Запуск сервера
+poetry run python manage.py runserver
+Доступные URL
+URL	Описание
+/	Главная страница
+/catalog/	Каталог товаров
+/catalog/product/<int:pk>/	Детальная страница товара
+/contacts/	Контакты и обратная связь
+/blog/	Список статей блога
+/blog/<int:pk>/	Детальная страница статьи
+/admin/	Админ-панель
+Тестирование
+bash
+# Запуск всех тестов
+poetry run python manage.py test
+
+# Покрытие кода тестами
+poetry run coverage run manage.py test
+poetry run coverage report
+Качество кода
+bash
+# Форматирование
+poetry run black .
+poetry run isort .
+
+# Линтинг
+poetry run flake8 .

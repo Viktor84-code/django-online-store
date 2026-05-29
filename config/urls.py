@@ -18,18 +18,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
-
-from catalog import views
+from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.home, name="home"),
-    path("contacts/", views.contacts, name="contacts"),
-    path("catalog/", views.catalog, name="catalog"),
-    path("products/", views.product_list, name="product_list"),
-    path("products/<int:pk>/", views.product_detail, name="product_detail"),
-    path("products/create/", views.product_create, name="product_create"),
+    path("", include("catalog.urls")),
+    path("blog/", include("blog.urls")),
 ]
 
 if settings.DEBUG:
