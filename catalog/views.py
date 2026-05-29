@@ -4,65 +4,50 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ProductForm
 from .models import Contact, Product
 
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
-def home(request):
-    return render(request, "catalog/home.html")
+class HomeView(TemplateView):
+    template_name = 'catalog/home.html'
 
 
-def contacts(request):
-    contacts_data = Contact.objects.all()
+class ContactsView(TemplateView):
+    template_name = 'catalog/contacts.html'
 
-    if request.method == "POST":
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contacts'] = Contact.objects.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
         name = request.POST.get("name")
         phone = request.POST.get("phone")
         message = request.POST.get("message")
 
-        # Сохраняем новый контакт в БД
         Contact.objects.create(name=name, phone=phone, message=message)
 
-        # Обновляем список контактов после сохранения
-        contacts_data = Contact.objects.all()
+        context = self.get_context_data()
+        context['message_sent'] = True
+        context['name'] = name
 
-        return render(
-            request,
-            "catalog/contacts.html",
-            {"message_sent": True, "name": name, "contacts": contacts_data},
-        )
-
-    return render(request, "catalog/contacts.html", {"contacts": contacts_data})
+        return self.render_to_response(context)
 
 
-def catalog(request):
-    products_list = Product.objects.all()
-    paginator = Paginator(products_list, 6)
-    page_number = request.GET.get("page")
-    products = paginator.get_page(page_number)
-    return render(request, "catalog/catalog.html", {"products": products})
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/product_list.html'
+    context_object_name = 'products'
+    paginate_by = 6
 
 
-def product_list(request):
-    """Главная страница с динамическим списком товаров и пагинацией"""
-    products_list = Product.objects.all()
-    paginator = Paginator(products_list, 6)  # 6 товаров на страницу
-
-    page_number = request.GET.get("page")
-    products = paginator.get_page(page_number)
-
-    return render(request, "catalog/product_list.html", {"products": products})
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
 
 
-def product_detail(request, pk):
-    """Детальная страница товара"""
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, "catalog/product_detail.html", {"product": product})
-
-
-def product_create(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("product_list")
-    else:
-        form = ProductForm()
-    return render(request, "catalog/product_create.html", {"form": form})
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_create.html'
+    success_url = reverse_lazy('product_list')
