@@ -3,13 +3,17 @@
 {% block title %}Добавить товар{% endblock %}
 
 {% block content %}
-<h1>Новый товар</h1>
+<div class="d-flex">
+    {% include 'catalog/menu.html' %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Сохранить</button>
-</form>
-
-<a href="/products/">Отмена</a>
+    <main class="container-fluid p-5">
+        <h1>Новый товар</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </main>
+</div>
 {% endblock %}

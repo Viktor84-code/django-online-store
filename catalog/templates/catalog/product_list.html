@@ -3,44 +3,8 @@
 {% block title %}Каталог товаров{% endblock %}
 
 {% block content %}
-<style>
-    .sidebar { min-width: 250px; height: 100vh; background: #212529; color: white; }
-    .nav-link { color: rgba(255,255,255,.75); }
-    .nav-link:hover, .nav-link.active { color: white; background: #0d6efd; }
-    .pagination {
-        margin-top: 30px;
-        text-align: center;
-    }
-    .pagination a, .pagination span {
-        display: inline-block;
-        padding: 8px 12px;
-        margin: 0 4px;
-        text-decoration: none;
-        background: #f4f4f4;
-        border-radius: 4px;
-        color: #333;
-    }
-    .pagination a:hover {
-        background: #0d6efd;
-        color: white;
-    }
-    .pagination span {
-        background: #0d6efd;
-        color: white;
-    }
-</style>
 <div class="d-flex">
-    <div class="sidebar d-flex flex-column p-3">
-        <h3 class="fs-4 text-center">Skystore</h3>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item"><a href="/" class="nav-link">Главная</a></li>
-            <li><a href="/catalog/" class="nav-link active">Каталог</a></li>
-            <li><a href="/contacts/" class="nav-link">Контакты</a></li>
-        </ul>
-        <hr>
-        <div class="p-2 small">© Skystore 2026</div>
-    </div>
+    {% include 'catalog/menu.html' %}
 
     <main class="container-fluid p-5">
         <h1>Каталог товаров</h1>
@@ -50,9 +14,10 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                         style="height: 200px; object-fit: cover;">
                     {% else %}
-                        <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
+                    <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
                     {% endif %}
                     <div class="card-body">
                         <h3>{{ product.name }}</h3>
@@ -69,19 +34,21 @@
             {% endfor %}
         </div>
 
-        <!-- Пагинация -->
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; Первая</a>
-                <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
-            {% endif %}
+        <div class="pagination" style="margin-top: 30px; text-align: center;">
+            <div class="btn-group" role="group">
+                {% if page_obj.has_previous %}
+                <a href="?page=1" class="btn btn-outline-primary btn-sm">&laquo; Первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary btn-sm">Назад</a>
+                {% endif %}
 
-            <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+                <span class="btn btn-primary btn-sm disabled">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
 
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
-            {% endif %}
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary btn-sm">Вперед</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-primary btn-sm">Последняя
+                    &raquo;</a>
+                {% endif %}
+            </div>
         </div>
     </main>
 </div>
