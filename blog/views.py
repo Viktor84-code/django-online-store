@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import BlogPost
+from django.http import Http404
 
 
 class BlogPostListView(ListView):
@@ -19,6 +20,8 @@ class BlogPostDetailView(DetailView):
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
+        if not obj.is_published:
+            raise Http404("Статья не опубликована")
         obj.views_count += 1
         obj.save()
         return obj

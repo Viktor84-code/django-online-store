@@ -1,5 +1,7 @@
 from django.core.management import call_command
 from django.test import TestCase
+from django.urls import reverse
+
 
 from catalog.models import Category, Contact, Product
 
@@ -78,29 +80,37 @@ class ViewsTest(TestCase):
         )
 
     def test_home_page(self):
-        response = self.client.get("/")
+        response = self.client.get(reverse('catalog:home'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "catalog/home.html")
 
-    def test_catalog_page(self):
-        response = self.client.get("/catalog/")
+    def test_product_list_page(self):
+        response = self.client.get(reverse('catalog:product_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "catalog/catalog.html")
+        self.assertTemplateUsed(response, "catalog/product_list.html")
         self.assertContains(response, "iPhone 14")
 
     def test_contacts_page_get(self):
-        response = self.client.get("/contacts/")
+        response = self.client.get(reverse('catalog:contacts'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "catalog/contacts.html")
 
     def test_contacts_page_post(self):
         response = self.client.post(
-            "/contacts/",
+            reverse('catalog:contacts'),
             {"name": "Тестовый пользователь", "phone": "+7 999 123-45-67", "message": "Тестовое сообщение"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context["message_sent"])
         self.assertEqual(response.context["name"], "Тестовый пользователь")
-
-        # Проверяем что контакт сохранился в БД
         self.assertEqual(Contact.objects.count(), 1)
+
+    def test_product_detail_page(self):
+        response = self.client.get(reverse('catalog:product_detail', args=[self.product.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "catalog/product_detail.html")
+
+    def test_product_create_page(self):
+        response = self.client.get(reverse('catalog:product_create'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "catalog/product_create.html")
