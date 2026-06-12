@@ -8,6 +8,7 @@ class BlogPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
     views_count = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
+    congratulation_sent = models.BooleanField(default=False, verbose_name="Поздравление отправлено")
 
     class Meta:
         verbose_name = "Блоговая запись"

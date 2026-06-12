@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.mail import send_mail
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -25,6 +27,16 @@ class BlogPostDetailView(DetailView):
             raise Http404("Статья не опубликована")
         obj.views_count += 1
         obj.save()
+        if obj.views_count == 100 and not obj.congratulation_sent:
+            send_mail(
+                subject='🎉 Поздравляем! 100 просмотров',
+                message=f'🎉 Поздравление! Статья "{obj.title}" набрала 100 просмотров! Ты крут!',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=['tvoja_pochta@example.com'],  # твоя почта
+                fail_silently=False,
+            )
+            obj.congratulation_sent = True
+            obj.save(update_fields=['congratulation_sent'])
         return obj
 
 
