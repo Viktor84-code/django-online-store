@@ -1,4 +1,7 @@
+import os
+
 from django import forms
+from django.core.exceptions import ValidationError
 
 from .models import Product
 
@@ -45,3 +48,19 @@ class ProductForm(forms.ModelForm):
         if price is not None and price < 0:
             raise forms.ValidationError('Цена не может быть отрицательной')
         return price
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if not image:
+            return image
+
+        # Размер файла (5 МБ = 5 * 1024 * 1024 байт)
+        if image.size > 5 * 1024 * 1024:
+            raise ValidationError('Размер изображения не должен превышать 5 МБ')
+
+        # Расширение файла
+        ext = os.path.splitext(image.name)[1].lower()
+        if ext not in ['.jpg', '.jpeg', '.png']:
+            raise ValidationError('Допустимые форматы: JPEG, PNG')
+
+        return image
