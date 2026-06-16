@@ -1,9 +1,10 @@
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import BlogPost
 
 
@@ -29,25 +30,25 @@ class BlogPostDetailView(DetailView):
         obj.save()
         if obj.views_count == 100 and not obj.congratulation_sent:
             send_mail(
-                subject='🎉 Поздравляем! 100 просмотров',
+                subject="🎉 Поздравляем! 100 просмотров",
                 message=f'🎉 Поздравление! Статья "{obj.title}" набрала 100 просмотров! Ты крут!',
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=['tvoja_pochta@example.com'],  # твоя почта
+                recipient_list=["tvoja_pochta@example.com"],  # твоя почта
                 fail_silently=False,
             )
             obj.congratulation_sent = True
-            obj.save(update_fields=['congratulation_sent'])
+            obj.save(update_fields=["congratulation_sent"])
         return obj
 
 
-class BlogPostCreateView(LoginRequiredMixin,CreateView):
+class BlogPostCreateView(LoginRequiredMixin, CreateView):
     model = BlogPost
     fields = ["title", "content", "preview", "is_published"]
     template_name = "blog/blog_form.html"
     success_url = reverse_lazy("blog:list")
 
 
-class BlogPostUpdateView(LoginRequiredMixin,UpdateView):
+class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
     model = BlogPost
     fields = ["title", "content", "preview", "is_published"]
     template_name = "blog/blog_form.html"
@@ -56,7 +57,7 @@ class BlogPostUpdateView(LoginRequiredMixin,UpdateView):
         return reverse_lazy("blog:detail", kwargs={"pk": self.object.pk})
 
 
-class BlogPostDeleteView(LoginRequiredMixin,DeleteView):
+class BlogPostDeleteView(LoginRequiredMixin, DeleteView):
     model = BlogPost
     template_name = "blog/blog_confirm_delete.html"
     success_url = reverse_lazy("blog:list")

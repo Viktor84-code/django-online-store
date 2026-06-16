@@ -2,10 +2,9 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
-from django.views.generic import DetailView
+from django.views.generic import CreateView, DetailView, UpdateView
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import User
 
 
@@ -36,7 +35,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = CustomUserChangeForm
     template_name = "registration/profile_edit.html"
-    success_url = "/"   # <--- просто корень
+    success_url = "/"  # <--- просто корень
 
     def get_object(self, queryset=None):
         return self.request.user

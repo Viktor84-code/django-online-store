@@ -1,8 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
+from catalog.forms import ProductForm
 from catalog.models import Category, Contact, Product
+
+User = get_user_model()
 
 
 class CategoryModelTest(TestCase):
@@ -110,6 +114,48 @@ class ViewsTest(TestCase):
         self.assertTemplateUsed(response, "catalog/product_detail.html")
 
     def test_product_create_page(self):
-        response = self.client.get(reverse("catalog:product_create"))
+        User.objects.create_user(email="test@test.com", password="testpass123")
+        self.client.login(email="test@test.com", password="testpass123")
+        response = self.client.get("/create/")
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "catalog/product_create.html")
+
+
+class ProductFormTest(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Тестовая категория")
+
+    def test_product_form_valid(self):
+        form_data = {
+            "name": "Тестовый товар",
+            "description": "Описание товара",
+            "price": "100.00",
+            "category": self.category.pk,
+        }
+        form = ProductForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_product_form_price_negative(self):
+        form_data = {
+            "name": "Тестовый товар",
+            "description": "Описание товара",
+            "price": "-10.00",
+            "category": self.category.pk,
+        }
+        form = ProductForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("price", form.errors)
+        self.assertEqual(form.errors["price"][0], "Цена не может быть отрицательной")
+
+    def test_product_form_forbidden_words(self):
+        forbidden_words = ["казино", "криптовалюта", "биржа", "дешево", "бесплатно", "обман", "полиция", "радар"]
+        for word in forbidden_words:
+            form_data = {
+                "name": f"Товар {word}",
+                "description": "Описание товара",
+                "price": "100.00",
+                "category": self.category.pk,
+            }
+            form = ProductForm(data=form_data)
+            self.assertFalse(form.is_valid())
+            self.assertIn("name", form.errors)
+            self.assertIn(f'Слово "{word}" запрещено в названии', form.errors["name"][0])

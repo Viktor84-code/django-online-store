@@ -74,3 +74,8 @@ version = "0.1.0"
 description = "Django online store project with PostgreSQL"
 authors = ["Viktor <your-email@example.com>"]
 readme = "README.md"
+
+[tool.mypy]
+[[tool.mypy.overrides]]
+module = "django.*"
+ignore_missing_imports = true

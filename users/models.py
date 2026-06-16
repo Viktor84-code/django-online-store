@@ -22,26 +22,15 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
-    phone = models.CharField(
-        max_length=20,
-        unique=True,
-        null=True,
-        blank=True,
-        verbose_name="Телефон"
-    )
+    phone = models.CharField(max_length=20, unique=True, null=True, blank=True, verbose_name="Телефон")
     avatar = models.ImageField(
         upload_to="avatars/",
         null=True,
         blank=True,
         validators=[FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png"])],
-        verbose_name="Аватар"
+        verbose_name="Аватар",
     )
-    country = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Страна"
-    )
+    country = models.CharField(max_length=100, null=True, blank=True, verbose_name="Страна")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
