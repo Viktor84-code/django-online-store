@@ -18,15 +18,14 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent   # ← СНАЧАЛА
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'   # ← ПОТОМ
-
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 465))
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'viktor.britkin84@yandex.ru'
+EMAIL_HOST_PASSWORD = 'ryqwhssvaugtycxp'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "catalog",
     "blog",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +137,4 @@ STATIC_URL = "static/"
 # Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+AUTH_USER_MODEL = "users.User"
