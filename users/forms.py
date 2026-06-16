@@ -1,5 +1,6 @@
+from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django import forms
+
 from .models import User
 
 
@@ -22,3 +23,16 @@ class CustomAuthenticationForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({"class": "form-control"})
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ("email", "phone", "avatar", "country")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({"class": "form-control"})
+        # Убираем обязательность пароля
+        self.fields.pop("password")
