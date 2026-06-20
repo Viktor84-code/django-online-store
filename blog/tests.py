@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 
@@ -58,3 +60,46 @@ class BlogViewsTest(TestCase):
         post = BlogPost.objects.create(title="Test", content="Test content")
         response = self.client.get(f"/blog/{post.pk}/delete/")
         self.assertEqual(response.status_code, 200)
+
+
+class ContentManagerTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='user@test.com',
+            password='testpass123'
+        )
+        self.manager = User.objects.create_user(
+            email='manager@test.com',
+            password='testpass123'
+        )
+        self.post = BlogPost.objects.create(
+            title='Test Post',
+            content='Test content'
+        )
+
+        # Создаем группу контент-менеджеров
+        group, _ = Group.objects.get_or_create(name='Контент-менеджер')
+        content_type = ContentType.objects.get_for_model(BlogPost)
+        permissions = Permission.objects.filter(content_type=content_type)
+        group.permissions.set(permissions)
+        self.manager.groups.add(group)
+
+    def test_manager_can_edit(self):
+        self.client.login(email='manager@test.com', password='testpass123')
+        response = self.client.get(reverse('blog:update', args=[self.post.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_regular_user_cannot_edit(self):
+        self.client.login(email='user@test.com', password='testpass123')
+        response = self.client.get(reverse('blog:update', args=[self.post.pk]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_manager_can_delete(self):
+        self.client.login(email='manager@test.com', password='testpass123')
+        response = self.client.get(reverse('blog:delete', args=[self.post.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_regular_user_cannot_delete(self):
+        self.client.login(email='user@test.com', password='testpass123')
+        response = self.client.get(reverse('blog:delete', args=[self.post.pk]))
+        self.assertEqual(response.status_code, 403)

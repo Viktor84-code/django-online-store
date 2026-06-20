@@ -56,7 +56,7 @@ class BlogPostCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("blog:list")
 
 
-class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
+class BlogPostUpdateView(LoginRequiredMixin, ContentManagerMixin, UpdateView):
     model = BlogPost
     fields = ["title", "content", "preview", "is_published"]
     template_name = "blog/blog_form.html"
@@ -65,7 +65,7 @@ class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("blog:detail", kwargs={"pk": self.object.pk})
 
 
-class BlogPostDeleteView(LoginRequiredMixin, DeleteView):
+class BlogPostDeleteView(LoginRequiredMixin, ContentManagerMixin, DeleteView):
     model = BlogPost
     template_name = "blog/blog_confirm_delete.html"
     success_url = reverse_lazy("blog:list")
