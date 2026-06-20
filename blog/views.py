@@ -1,11 +1,19 @@
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .models import BlogPost
+
+
+class ContentManagerMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('blog.can_manage_blog'):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class BlogPostListView(ListView):
