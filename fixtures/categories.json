@@ -1,0 +1,32 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Электроника",
+        "description": "Телефоны, ноутбуки, планшеты",
+        "created_at": "2026-05-16T14:51:51.071Z",
+        "updated_at": "2026-05-16T14:51:51.071Z"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская, женская, детская",
+        "created_at": "2026-05-16T14:51:51.076Z",
+        "updated_at": "2026-05-16T14:51:51.076Z"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+        "name": "Книги",
+        "description": "Художественная литература, учебники",
+        "created_at": "2026-05-16T14:51:51.077Z",
+        "updated_at": "2026-05-16T14:51:51.077Z"
+    }
+}
+]

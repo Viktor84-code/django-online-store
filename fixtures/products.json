@@ -1,0 +1,41 @@
+[
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "iPhone 14",
+        "description": "Смартфон Apple",
+        "image": "",
+        "price": "799.99",
+        "category": 1,
+        "created_at": "2026-05-16T14:52:03.642Z",
+        "updated_at": "2026-05-16T14:52:03.642Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Samsung Galaxy S23",
+        "description": "Смартфон Samsung",
+        "image": "",
+        "price": "699.99",
+        "category": 1,
+        "created_at": "2026-05-16T14:52:03.649Z",
+        "updated_at": "2026-05-16T14:52:03.649Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Футболка хлопок",
+        "description": "Белая футболка",
+        "image": "",
+        "price": "19.99",
+        "category": 2,
+        "created_at": "2026-05-16T14:52:03.651Z",
+        "updated_at": "2026-05-16T14:52:03.651Z"
+    }
+}
+]

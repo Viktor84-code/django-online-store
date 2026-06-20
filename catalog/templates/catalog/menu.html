@@ -1,0 +1,36 @@
+<style>
+    .sidebar { min-width: 250px; height: 100vh; background: #212529; color: white; }
+    .nav-link { color: rgba(255,255,255,.75); }
+    .nav-link:hover, .nav-link.active { color: white; background: #0d6efd; }
+    .pagination { margin-top: 30px; text-align: center; }
+    .btn-group { gap: 5px; }
+    .btn-group .btn { border-radius: 4px; }
+</style>
+<div class="sidebar d-flex flex-column p-3">
+    <h3 class="fs-4 text-center">Skystore</h3>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item"><a href="/" class="nav-link">Главная</a></li>
+        <li><a href="/catalog/" class="nav-link">Каталог</a></li>
+        <li><a href="/contacts/" class="nav-link">Контакты</a></li>
+        <li><a href="/blog/" class="nav-link">Блог</a></li>
+    </ul>
+    <div>
+        <a href="/admin/" class="nav-link text-warning">🔐 Админ-панель</a>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="text-center text-light small mb-2">{{ user.email }}</div>
+    <a href="{% url 'users:profile' %}" class="nav-link text-info">👤 Мой профиль</a>
+    <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="nav-link text-warning" style="background: none; border: none; cursor: pointer;">🚪
+            Выйти
+        </button>
+    </form>
+    {% else %}
+    <a href="{% url 'users:login' %}" class="nav-link text-info">🔑 Войти</a>
+    <a href="{% url 'users:register' %}" class="nav-link text-success">📝 Регистрация</a>
+    {% endif %}
+    <hr>
+    <div class="p-2 small">© Skystore 2026</div>
+</div>
