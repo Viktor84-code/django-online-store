@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -21,6 +22,18 @@ class Product(models.Model):
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(upload_to="products/", blank=True, null=True, verbose_name="Изображение")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products',
+        verbose_name='Владелец'
+    )
+    is_published = models.BooleanField(
+        default=False,
+        verbose_name='Опубликовано'
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -34,6 +47,9 @@ class Product(models.Model):
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
         ordering = ["-created_at"]
+        permissions = [
+            ('can_unpublish_product', 'Может отменять публикацию продукта'),
+        ]
 
     def __str__(self):
         return self.name

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -9,11 +10,22 @@ class BlogPost(models.Model):
     is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
     views_count = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
     congratulation_sent = models.BooleanField(default=False, verbose_name="Поздравление отправлено")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='blog_posts',
+        verbose_name='Владелец'
+    )
 
     class Meta:
         verbose_name = "Блоговая запись"
         verbose_name_plural = "Блоговые записи"
         ordering = ["-created_at"]
+        permissions = [
+            ('can_manage_blog', 'Может управлять блогом'),
+        ]
 
     def __str__(self):
         return self.title
