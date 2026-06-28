@@ -1,12 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import ProductForm
-from .models import Contact, Product
+from .models import Category, Contact, Product
+from .services import get_products_by_category
 
 
 class OwnerOrModeratorMixin:
@@ -79,3 +81,24 @@ class ProductDeleteView(LoginRequiredMixin, OwnerOrModeratorMixin, DeleteView):
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:product_list")
+
+
+def products_by_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    products = get_products_by_category(category_id)
+    return render(request, 'catalog/products_by_category.html', {
+        'category': category,
+        'products': products
+    })
+
+
+class ProductListView(ListView):
+    model = Product
+    template_name = "catalog/product_list.html"
+    context_object_name = "products"
+    paginate_by = 6
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()  # ← добавляем категории
+        return context
