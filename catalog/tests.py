@@ -1,14 +1,14 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
 from catalog.forms import ProductForm
 from catalog.models import Category, Contact, Product
-
-User = get_user_model()
+from users.models import User
+from .services import get_cached_products_by_category, get_products_by_category
 
 
 class CategoryModelTest(TestCase):
@@ -254,3 +254,38 @@ class CreateGroupsFullCoverageTest(TestCase):
         call_command("create_groups")
         group2 = Group.objects.get(name="Модератор продуктов")
         self.assertEqual(group.pk, group2.pk)
+
+
+class ServicesTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@test.com", password="123")
+        self.category = Category.objects.create(name="Тестовая категория")
+        self.product = Product.objects.create(
+            name="Тестовый товар",
+            description="Описание",
+            price=100,
+            category=self.category,
+            owner=self.user,
+            is_published=True,
+        )
+        cache.clear()
+
+    def test_get_products_by_category(self):
+        products = get_products_by_category(self.category.id)
+        self.assertEqual(products.count(), 1)
+        self.assertEqual(products.first().name, "Тестовый товар")
+
+    def test_get_cached_products_by_category(self):
+        # Первый вызов — загрузка из БД и сохранение в кэш
+        products = get_cached_products_by_category(self.category.id)
+        self.assertEqual(products.count(), 1)
+
+        # Проверяем, что кэш записался
+        cache_key = f"category_{self.category.id}"
+        cached = cache.get(cache_key)
+        self.assertIsNotNone(cached)
+        self.assertEqual(cached.count(), 1)
+
+        # Второй вызов — данные из кэша
+        products2 = get_cached_products_by_category(self.category.id)
+        self.assertEqual(products2.count(), 1)

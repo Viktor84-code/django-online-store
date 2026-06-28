@@ -389,3 +389,64 @@ poetry run flake8 .
 poetry run python manage.py create_groups
 poetry run python manage.py create_blog_groups
 ```
+
+## 🚀 Модуль «Кэширование и бизнес-логика» (Homework 3)
+
+### Выполненные задачи:
+
+#### Задание 1. Установка Redis
+- Redis установлен и запущен локально (порт 6379)
+- Настройки в `settings.py`:
+  ```python
+  CACHES = {
+      'default': {
+          'BACKEND': 'django_redis.cache.RedisCache',
+          'LOCATION': 'redis://127.0.0.1:6379/1',
+          'OPTIONS': {
+              'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+          }
+      }
+  }
+Зависимости: redis (4.5.4), django-redis (5.4.0)
+
+Задание 2. Кэширование страницы продукта
+Страница ProductDetailView закэширована через @method_decorator(cache_page(60 * 15))
+
+Время жизни кэша: 15 минут
+
+Задание 3. Сервисная функция и представление категории
+Создан сервис catalog/services.py с функцией get_products_by_category(category_id)
+
+Добавлено представление products_by_category и URL /category/<int:category_id>/
+
+Создан шаблон products_by_category.html с выводом товаров в карточках
+
+Категории выводятся на главной странице каталога
+
+Задание 4. Низкоуровневое кэширование
+Реализована функция get_cached_products_by_category(category_id)
+
+Ключ кэша: category_{id}
+
+Время жизни: 15 минут (900 секунд)
+
+Данные сохраняются и извлекаются из Redis
+
+Проверка кэша
+bash
+# Проверка через Django shell
+python manage.py shell
+>>> from django.core.cache import cache
+>>> cache.get('category_1')  # список товаров
+>>> cache.ttl('category_1')   # время жизни в секундах
+
+# Проверка через redis-cli
+redis-cli -n 1 keys *  # должен быть ключ :1:category_1
+Запуск Redis
+bash
+redis-server
+# или через службу Windows
+Зависимости (актуальные версии)
+text
+redis = ">=4.5.4,<5.0.0"
+django-redis = ">=5.4.0,<6.0.0"

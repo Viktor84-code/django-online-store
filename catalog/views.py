@@ -45,14 +45,7 @@ class ContactsView(TemplateView):
         return self.render_to_response(context)
 
 
-class ProductListView(ListView):
-    model = Product
-    template_name = "catalog/product_list.html"
-    context_object_name = "products"
-    paginate_by = 6
-
-
-@method_decorator(cache_page(60 * 15), name='dispatch')
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
@@ -60,7 +53,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category_id'] = self.object.category.id  # ← добавить
+        context["category_id"] = self.object.category.id  # ← добавить
         return context
 
 
@@ -91,10 +84,7 @@ class ProductDeleteView(LoginRequiredMixin, OwnerOrModeratorMixin, DeleteView):
 def products_by_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     products = get_cached_products_by_category(category_id)
-    return render(request, 'catalog/products_by_category.html', {
-        'category': category,
-        'products': products
-    })
+    return render(request, "catalog/products_by_category.html", {"category": category, "products": products})
 
 
 class ProductListView(ListView):
@@ -105,5 +95,5 @@ class ProductListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()  # ← добавляем категории
+        context["categories"] = Category.objects.all()  # ← добавляем категории
         return context

@@ -10,7 +10,7 @@ def get_products_by_category(category_id):
 
 def get_cached_products_by_category(category_id):
     """Возвращает список продуктов из кэша или из БД с сохранением в кэш."""
-    cache_key = f'category_{category_id}'
+    cache_key = f"category_{category_id}"
     products = cache.get(cache_key)
 
     if products is None:
