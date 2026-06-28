@@ -8,7 +8,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, T
 
 from .forms import ProductForm
 from .models import Category, Contact, Product
-from .services import get_products_by_category
+from .services import get_cached_products_by_category
 
 
 class OwnerOrModeratorMixin:
@@ -58,6 +58,11 @@ class ProductDetailView(DetailView):
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_id'] = self.object.category.id  # ← добавить
+        return context
+
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
@@ -85,7 +90,7 @@ class ProductDeleteView(LoginRequiredMixin, OwnerOrModeratorMixin, DeleteView):
 
 def products_by_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    products = get_products_by_category(category_id)
+    products = get_cached_products_by_category(category_id)
     return render(request, 'catalog/products_by_category.html', {
         'category': category,
         'products': products
