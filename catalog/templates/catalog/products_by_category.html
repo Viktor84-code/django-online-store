@@ -10,21 +10,31 @@
         <h1>Товары в категории {{ category.name }}</h1>
 
         {% if products %}
-        <ul>
-            {% for product in products %}
-            <li>
-                <a href="{% url 'catalog:product_detail' product.pk %}">
-                    {{ product.name }}
-                </a>
-                - {{ product.price }} ₽
-            </li>
-            {% endfor %}
-        </ul>
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-secondary text-white text-center py-5">Нет фото</div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h3>{{ product.name }}</h3>
+                                <p>{{ product.description|truncatechars:100 }}</p>
+                                <p><strong>{{ product.price }} ₽</strong></p>
+                                <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary">Подробнее →</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-        <p>В этой категории пока нет товаров.</p>
+            <p>В этой категории пока нет товаров.</p>
         {% endif %}
 
-        <p><a href="{% url 'catalog:product_list' %}">Назад ко всем товарам</a></p>
+        <p><a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Назад ко всем товарам</a></p>
     </main>
 </div>
 {% endblock %}
