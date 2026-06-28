@@ -27,13 +27,10 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='products',
-        verbose_name='Владелец'
+        related_name="products",
+        verbose_name="Владелец",
     )
-    is_published = models.BooleanField(
-        default=False,
-        verbose_name='Опубликовано'
-    )
+    is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -48,7 +45,7 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
         ordering = ["-created_at"]
         permissions = [
-            ('can_unpublish_product', 'Может отменять публикацию продукта'),
+            ("can_unpublish_product", "Может отменять публикацию продукта"),
         ]
 
     def __str__(self):

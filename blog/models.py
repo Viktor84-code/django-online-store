@@ -15,8 +15,8 @@ class BlogPost(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='blog_posts',
-        verbose_name='Владелец'
+        related_name="blog_posts",
+        verbose_name="Владелец",
     )
 
     class Meta:
@@ -24,7 +24,7 @@ class BlogPost(models.Model):
         verbose_name_plural = "Блоговые записи"
         ordering = ["-created_at"]
         permissions = [
-            ('can_manage_blog', 'Может управлять блогом'),
+            ("can_manage_blog", "Может управлять блогом"),
         ]
 
     def __str__(self):

@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import ProductForm
@@ -10,7 +12,7 @@ from .models import Contact, Product
 class OwnerOrModeratorMixin:
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
-        if obj.owner != request.user and not request.user.has_perm('catalog.can_unpublish_product'):
+        if obj.owner != request.user and not request.user.has_perm("catalog.can_unpublish_product"):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -48,6 +50,7 @@ class ProductListView(ListView):
     paginate_by = 6
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
@@ -65,14 +68,14 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, OwnerOrModeratorMixin,UpdateView):
+class ProductUpdateView(LoginRequiredMixin, OwnerOrModeratorMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "catalog/product_edit.html"
     success_url = reverse_lazy("catalog:product_list")
 
 
-class ProductDeleteView(LoginRequiredMixin, OwnerOrModeratorMixin,DeleteView):
+class ProductDeleteView(LoginRequiredMixin, OwnerOrModeratorMixin, DeleteView):
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:product_list")

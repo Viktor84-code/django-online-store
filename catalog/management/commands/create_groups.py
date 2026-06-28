@@ -6,17 +6,16 @@ from catalog.models import Product
 
 
 class Command(BaseCommand):
-    help = 'Create moderator group and assign permissions'
+    help = "Create moderator group and assign permissions"
 
     def handle(self, *args, **options):
-        group, created = Group.objects.get_or_create(name='Модератор продуктов')
+        group, created = Group.objects.get_or_create(name="Модератор продуктов")
 
         if created:
             content_type = ContentType.objects.get_for_model(Product)
 
             permissions = Permission.objects.filter(
-                content_type=content_type,
-                codename__in=['can_unpublish_product', 'delete_product']
+                content_type=content_type, codename__in=["can_unpublish_product", "delete_product"]
             )
 
             group.permissions.set(permissions)
@@ -24,4 +23,4 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS('Group "Модератор продуктов" created with permissions'))
         else:
-            self.stdout.write(self.style.WARNING('Group already exists'))
+            self.stdout.write(self.style.WARNING("Group already exists"))

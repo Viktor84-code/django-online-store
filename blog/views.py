@@ -11,7 +11,7 @@ from .models import BlogPost
 
 class ContentManagerMixin:
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_perm('blog.can_manage_blog'):
+        if not request.user.has_perm("blog.can_manage_blog"):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 

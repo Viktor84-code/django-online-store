@@ -33,7 +33,7 @@ class User(AbstractUser):
     country = models.CharField(max_length=100, null=True, blank=True, verbose_name="Страна")
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: list[str] = ["phone"]
 
     objects = UserManager()
 
