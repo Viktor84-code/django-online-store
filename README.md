@@ -1,5 +1,7 @@
 # Django Online Store
 
+Учебный проект интернет-магазина на Django. Курс Skypro.
+
 ## 🚀 Быстрый старт
 
 '''
@@ -18,7 +20,7 @@ Django 6.0
 Bootstrap 5
 
 Python 3.13
-## "Базы данных" (16.05.2026)
+## Домашнее задание "Базы данных" (16.05.2026)
 
 ### Выполненные задачи:
 
@@ -119,7 +121,7 @@ poetry run isort .
 bash
 poetry run flake8 .
 
-## "Шаблонизация" (24.05.2026)
+## Домашнее задание "Шаблонизация" (24.05.2026)
 
 ### Выполненные задачи:
 
@@ -145,7 +147,7 @@ poetry run flake8 .
 - С каталога на детальную страницу (кнопка "Подробнее")
 - С детальной страницы обратно в каталог (ссылка "Назад к каталогу")
 
-#### 5. Форма добавления товара 
+#### 5. Форма добавления товара (доп. задание)
 - URL: `/products/create/`
 - `ProductForm` на базе `ModelForm`
 - Поля: name, description, price, category, image
@@ -153,7 +155,7 @@ poetry run flake8 .
 - Сохранение в БД через `form.save()`
 - Редирект на список товаров после сохранения
 
-#### 6. Пагинация
+#### 6. Пагинация (доп. задание)
 - 6 товаров на страницу
 - Пагинация через `Paginator` в `catalog` view
 - Навигация: Первая, Назад, Вперед, Последняя
@@ -174,11 +176,11 @@ catalog/templates/
 ├── contacts.html
 └── home.html
 
-## "Class-Based Views и Блог" (29.05.2026)
+## Домашнее задание "Class-Based Views и Блог" (29.05.2026)
 
 ### Выполненные задачи:
 
-#### 1. Перевод контроллеров на CBV )
+#### 1. Перевод контроллеров на CBV (Задание 1)
 - `HomeView` — TemplateView
 - `ContactsView` — TemplateView с обработкой POST
 - `ProductListView` — ListView с пагинацией (6 товаров)
@@ -187,7 +189,7 @@ catalog/templates/
 - `ProductUpdateView` — UpdateView
 - `ProductDeleteView` — DeleteView
 
-#### 2. Создание блога 
+#### 2. Создание блога (Задание 2)
 - Приложение `blog` зарегистрировано в `INSTALLED_APPS`
 - Модель `BlogPost` с полями:
   - `title` — заголовок
@@ -200,7 +202,7 @@ catalog/templates/
 - Шаблоны блога наследуют `base.html`
 - URL-маршруты: `/blog/` (список), `/blog/<int:pk>/` (детали), `/blog/create/`, `/blog/<int:pk>/update/`, `/blog/<int:pk>/delete/`
 
-#### 3. Модификации блога 
+#### 3. Модификации блога (Задание 3)
 - Увеличение счётчика просмотров при открытии статьи (переопределён `get_object` в `DetailView`)
 - В списке статей выводятся только опубликованные (`get_queryset` в `ListView`)
 - После редактирования — редирект на страницу статьи (`get_success_url` в `UpdateView`)
@@ -290,7 +292,9 @@ poetry run isort .
 # Линтинг
 poetry run flake8 .
 
-## "Формы и валидация" (12.06.2026)
+## Домашнее задание "Формы и валидация" (12.06.2026)
+
+### Выполненные задачи:
 
 #### 1. CRUD для продуктов с формами
 - `ProductForm` на базе `ModelForm`
@@ -317,7 +321,7 @@ poetry run flake8 .
 - Валидация в `clean_image`: формат JPEG/PNG, размер до 5 МБ
 - В шаблонах добавлен `enctype="multipart/form-data"`
 
-#### 6. Дополнительное  (блог)
+#### 6. Дополнительное задание (блог)
 - При достижении 100 просмотров статьи отправляется письмо-поздравление
 - `congratulation_sent` — флаг для одноразовой отправки
 - Письма сохраняются в папку `sent_emails/` (для разработки)
@@ -365,7 +369,7 @@ poetry run flake8 .
 - Пароль приложения для безопасности
 
 
-## ✅ Модуль «Права доступа, группы, владельцы»
+## ✅ Модуль «Права доступа, группы, владельцы» (Homework 2)
 
 ### Реализовано:
 - Добавлены поля `owner` и `is_published` в модель `Product`
@@ -385,3 +389,64 @@ poetry run flake8 .
 poetry run python manage.py create_groups
 poetry run python manage.py create_blog_groups
 ```
+
+## 🚀 Модуль «Кэширование и бизнес-логика» (Homework 3)
+
+### Выполненные задачи:
+
+#### Задание 1. Установка Redis
+- Redis установлен и запущен локально (порт 6379)
+- Настройки в `settings.py`:
+  ```python
+  CACHES = {
+      'default': {
+          'BACKEND': 'django_redis.cache.RedisCache',
+          'LOCATION': 'redis://127.0.0.1:6379/1',
+          'OPTIONS': {
+              'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+          }
+      }
+  }
+Зависимости: redis (4.5.4), django-redis (5.4.0)
+
+Задание 2. Кэширование страницы продукта
+Страница ProductDetailView закэширована через @method_decorator(cache_page(60 * 15))
+
+Время жизни кэша: 15 минут
+
+Задание 3. Сервисная функция и представление категории
+Создан сервис catalog/services.py с функцией get_products_by_category(category_id)
+
+Добавлено представление products_by_category и URL /category/<int:category_id>/
+
+Создан шаблон products_by_category.html с выводом товаров в карточках
+
+Категории выводятся на главной странице каталога
+
+Задание 4. Низкоуровневое кэширование
+Реализована функция get_cached_products_by_category(category_id)
+
+Ключ кэша: category_{id}
+
+Время жизни: 15 минут (900 секунд)
+
+Данные сохраняются и извлекаются из Redis
+
+Проверка кэша
+bash
+# Проверка через Django shell
+python manage.py shell
+>>> from django.core.cache import cache
+>>> cache.get('category_1')  # список товаров
+>>> cache.ttl('category_1')   # время жизни в секундах
+
+# Проверка через redis-cli
+redis-cli -n 1 keys *  # должен быть ключ :1:category_1
+Запуск Redis
+bash
+redis-server
+# или через службу Windows
+Зависимости (актуальные версии)
+text
+redis = ">=4.5.4,<5.0.0"
+django-redis = ">=5.4.0,<6.0.0"

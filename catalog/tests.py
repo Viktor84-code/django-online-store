@@ -1,12 +1,14 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
 from catalog.forms import ProductForm
 from catalog.models import Category, Contact, Product
-
-User = get_user_model()
+from users.models import User
+from .services import get_cached_products_by_category, get_products_by_category
 
 
 class CategoryModelTest(TestCase):
@@ -159,3 +161,131 @@ class ProductFormTest(TestCase):
             self.assertFalse(form.is_valid())
             self.assertIn("name", form.errors)
             self.assertIn(f'Слово "{word}" запрещено в названии', form.errors["name"][0])
+
+
+class CreateGroupsCommandTest(TestCase):
+    def test_command_creates_group(self):
+        # Группа уже существует от предыдущих миграций/сигналов
+        # Проверяем, что команда не падает и группа есть
+        call_command("create_groups")
+        group = Group.objects.get(name="Модератор продуктов")
+        self.assertIsNotNone(group)
+
+        content_type = ContentType.objects.get_for_model(Product)
+        perms = group.permissions.filter(content_type=content_type)
+        self.assertEqual(perms.count(), 2)
+
+
+class ProductFormValidationTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Электроника")
+        self.user = User.objects.create_user(email="test@test.com", password="testpass123")
+
+    def test_product_form_price_zero(self):
+        """Цена 0.00 проходит валидацию (ожидаемое поведение)"""
+        form_data = {
+            "name": "Test Product",
+            "description": "Test description",
+            "price": "0.00",
+            "category": self.category.pk,
+        }
+        form = ProductForm(data=form_data)
+        # Если форма пропускает 0.00 — это нормально, тест должен это подтвердить
+        self.assertTrue(form.is_valid())
+
+    def test_product_form_missing_name(self):
+        """Имя обязательно"""
+        form_data = {
+            "description": "Test description",
+            "price": "100.00",
+            "category": self.category.pk,
+        }
+        form = ProductForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("name", form.errors)
+
+
+class ProductViewsAuthTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@test.com", password="testpass123")
+        self.category = Category.objects.create(name="Электроника")
+        self.product = Product.objects.create(
+            name="Test Product", description="Test description", price=100.00, category=self.category, owner=self.user
+        )
+
+    def test_product_edit_view_requires_login(self):
+        """Редактирование требует авторизации"""
+        response = self.client.get(reverse("catalog:product_edit", args=[self.product.pk]))
+        self.assertEqual(response.status_code, 302)  # redirect to login
+
+    def test_product_delete_view_requires_login(self):
+        """Удаление требует авторизации"""
+        response = self.client.get(reverse("catalog:product_delete", args=[self.product.pk]))
+        self.assertEqual(response.status_code, 302)  # redirect to login
+
+    def test_product_create_view_requires_login(self):
+        """Создание требует авторизации"""
+        response = self.client.get(reverse("catalog:product_create"))
+        self.assertEqual(response.status_code, 302)
+
+
+class CreateGroupsFullCoverageTest(TestCase):
+    def test_command_creates_group_with_permissions(self):
+        """Полное покрытие команды create_groups"""
+        # Удаляем группу если есть
+        Group.objects.filter(name="Модератор продуктов").delete()
+
+        # Проверяем что группы нет
+        self.assertEqual(Group.objects.filter(name="Модератор продуктов").count(), 0)
+
+        # Выполняем команду
+        call_command("create_groups")
+
+        # Проверяем что группа создалась
+        group = Group.objects.get(name="Модератор продуктов")
+        self.assertIsNotNone(group)
+
+        # Проверяем что права назначились
+        content_type = ContentType.objects.get_for_model(Product)
+        perms = group.permissions.filter(content_type=content_type)
+        self.assertEqual(perms.count(), 2)
+
+        # Проверяем что повторный вызов не ломается
+        call_command("create_groups")
+        group2 = Group.objects.get(name="Модератор продуктов")
+        self.assertEqual(group.pk, group2.pk)
+
+
+class ServicesTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@test.com", password="123")
+        self.category = Category.objects.create(name="Тестовая категория")
+        self.product = Product.objects.create(
+            name="Тестовый товар",
+            description="Описание",
+            price=100,
+            category=self.category,
+            owner=self.user,
+            is_published=True,
+        )
+        cache.clear()
+
+    def test_get_products_by_category(self):
+        products = get_products_by_category(self.category.id)
+        self.assertEqual(products.count(), 1)
+        self.assertEqual(products.first().name, "Тестовый товар")
+
+    def test_get_cached_products_by_category(self):
+        # Первый вызов — загрузка из БД и сохранение в кэш
+        products = get_cached_products_by_category(self.category.id)
+        self.assertEqual(products.count(), 1)
+
+        # Проверяем, что кэш записался
+        cache_key = f"category_{self.category.id}"
+        cached = cache.get(cache_key)
+        self.assertIsNotNone(cached)
+        self.assertEqual(cached.count(), 1)
+
+        # Второй вызов — данные из кэша
+        products2 = get_cached_products_by_category(self.category.id)
+        self.assertEqual(products2.count(), 1)

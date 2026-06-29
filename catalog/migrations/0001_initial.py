@@ -8,7 +8,9 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = []
+    dependencies: list[tuple[str, str]] = [
+    ('users', '0001_initial'),
+]
 
     operations = [
         migrations.CreateModel(
