@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex">
+    {% include 'catalog/menu.html' %}
+
+    <main class="container-fluid p-5">
+        <a href="{% url 'blog:list' %}" class="btn btn-secondary mb-3">← Назад к блогу</a>
+        
+        <h1>{{ post.title }}</h1>
+        <p><small>Дата: {{ post.created_at|date:"d.m.Y" }} | Просмотров: {{ post.views_count }}</small></p>
+        
+        {% if post.preview %}
+            <img src="{{ post.preview.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;" class="mb-3">
+        {% endif %}
+        
+        <div class="mt-4">
+            {{ post.content|linebreaks }}
+        </div>
+        
+        <div class="mt-4">
+            <a href="{% url 'blog:update' post.pk %}" class="btn btn-warning">Редактировать</a>
+            <a href="{% url 'blog:delete' post.pk %}" class="btn btn-danger">Удалить</a>
+        </div>
+    </main>
+</div>
+{% endblock %}

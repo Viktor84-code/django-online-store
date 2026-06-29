@@ -12,7 +12,9 @@ dependencies = [
     "psycopg2-binary (>=2.9.12,<3.0.0)",
     "python-dotenv (>=1.2.2,<2.0.0)",
     "pillow (>=12.2.0,<13.0.0)",
-    "ipython (>=9.13.0,<10.0.0)"
+    "ipython (>=9.13.0,<10.0.0)",
+    "redis (>=4.5.4,<5.0.0)",
+    "django-redis (>=5.4.0,<6.0.0)"
 ]
 
 
@@ -23,7 +25,8 @@ build-backend = "poetry.core.masonry.api"
 [dependency-groups]
 dev = [
     "isort (>=8.0.1,<9.0.0)",
-    "coverage (>=7.14.0,<8.0.0)"
+    "coverage (>=7.14.0,<8.0.0)",
+    "mypy (>=2.1.0,<3.0.0)"
 ]
 
 
@@ -73,3 +76,8 @@ version = "0.1.0"
 description = "Django online store project with PostgreSQL"
 authors = ["Viktor <your-email@example.com>"]
 readme = "README.md"
+
+[tool.mypy]
+[[tool.mypy.overrides]]
+module = "django.*"
+ignore_missing_imports = true
